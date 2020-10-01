@@ -28,7 +28,14 @@ Connect the card reader and run `pdf-sign.py` passing a pdf file as parameter:
 pdf-sign.py document.pdf
 ```
 
-Detailed usage options:
+#### Notes
+  - By default the script is using the [HARICA](https://harica.gr/) timestamp server, as a
+    consequence it needs to be run from a __Greek university network (or VPN)__.
+    To select a different timestamp server use the `--tsa` option.
+  - By default the signature is __invisible__, it is not shown in any page of the pdf.
+    Use the `--stamp-page`,`--stamp-pos` options to add a visible signature stamp.
+
+#### Detailed options
 ```
 usage: pdf-sign.py [-h] [--pin PIN] [--stamp-page N] [--stamp-pos X,Y] [--out-file FILE] [--tsa URL] [--card-reader FILE] PDF
 
