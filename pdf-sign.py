@@ -80,7 +80,7 @@ class Signer(hsm.HSM):
 
 
 def main():
-    def parse_pos(val):
+    def parse_pair(val):
         pos = val.split(',')
         if len(pos) != 2:
             raise argparse.ArgumentTypeError(f'{val} is not of the form X,Y')
@@ -91,21 +91,28 @@ def main():
                         help='path to pdf file')
     parser.add_argument('--pin',
                         type=str,
-                        help='the card pin.')
+                        help='the card pin. Default: ask for pin')
     parser.add_argument('--stamp-page', metavar='N',
                         default=0, type=int,
-                        help='the page to add a visible signature stamp. 0 (default) to disable the stamp.')
+                        help='the page to add a visible signature stamp. Default: 0 (no stamp)')
     parser.add_argument('--stamp-pos', metavar='X,Y',
-                        type=parse_pos,
+                        type=parse_pair,
                         default=(200,20),
-                        help='the X,Y coordinates (relative to the bottom-left corner) of the visible signature stamp.')
+                        help='the X,Y coordinates (relative to the bottom-left corner) of the signature stamp. Default: 200,20')
+    parser.add_argument('--stamp-size', metavar='W,H',
+                        type=parse_pair,
+                        default=(270,60),
+                        help='the width and height of the signature stamp. Default: 270,60')
+    parser.add_argument('--stamp-text', metavar='TEXT',
+                        type=str,
+                        help='the text of the signature stamp. Default: signer\'s name and date')
     parser.add_argument('--out-file', metavar='FILE',
                         type=str,
-                        help='the path of the signed pdf file. The default is to add the -signed suffix to the input PDF')
+                        help='the path of the signed pdf file. Default: input file with -signed suffix')
     parser.add_argument('--tsa', metavar='URL',
                         default="http://qts.harica.gr/",
                         type=str,
-                        help='URL of the timestamp server. Default: http://qts.harica.gr/')
+                        help='URL of the timestamp server (empty: no timestamp). Default: http://qts.harica.gr/')
     parser.add_argument('--card-reader', metavar='FILE',
                         default="libgclib.so",
                         type=str,
@@ -125,7 +132,11 @@ def main():
 
 
     date = datetime.datetime.utcnow().strftime('D:%Y%m%d%H%M%S+00\'00\'')
-    local_date = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    try:
+        local_date = datetime.datetime.now().astimezone().strftime("%Y.%m.%d %H:%M:%S %z")
+    except:
+        # older python3, astimezone cannot be used to get local tz
+        local_date = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y.%m.%d %H:%M:%S %z")
 
     hsm = Signer(args)
     info = {
@@ -137,9 +148,12 @@ def main():
     }
 
     if args.stamp_page != 0:
+        if args.stamp_text is None:
+            args.stamp_text = f'Digitally signed by {hsm.common_name}\nDate: {local_date}'
+
         info['sigpage'] = args.stamp_page - 1   # 0-based
-        info['signature'] = f'Digitally signed by {hsm.common_name}\nDate: {local_date}'
-        info['signaturebox'] = (args.stamp_pos[0], args.stamp_pos[1], args.stamp_pos[0] + 270, args.stamp_pos[1] + 60)
+        info['signature'] = args.stamp_text
+        info['signaturebox'] = (args.stamp_pos[0], args.stamp_pos[1], args.stamp_pos[0] + args.stamp_size[0], args.stamp_pos[1] + args.stamp_size[1])
         info['sigbutton'] = True
 
     pdf_data = open(args.pdf, 'rb').read()
@@ -148,7 +162,7 @@ def main():
         [],
         'sha256',
         hsm,
-        args.tsa,
+        args.tsa if args.tsa != "" else None,
     )
     hsm.logout()
 

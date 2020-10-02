@@ -32,23 +32,23 @@ pdf-sign.py document.pdf
   - By default the script is using the [HARICA](https://harica.gr/) timestamp server, as a
     consequence it needs to be run from a __Greek university network (or VPN)__.
     To select a different timestamp server use the `--tsa` option.
-  - By default the signature is __invisible__, it is not shown in any page of the pdf.
-    Use the `--stamp-page`,`--stamp-pos` options to add a visible signature stamp.
+  - By default the signature is __invisible__, not shown in any page of the pdf.
+    Use `--stamp-page=N` to add a visible signature stamp to page `N`.
 
 #### Detailed options
 ```
-usage: pdf-sign.py [-h] [--pin PIN] [--stamp-page N] [--stamp-pos X,Y] [--out-file FILE] [--tsa URL] [--card-reader FILE] PDF
-
 positional arguments:
   PDF                 path to pdf file
 
 optional arguments:
   -h, --help          show this help message and exit
-  --pin PIN           the card pin.
-  --stamp-page N      the page to add a visible signature stamp. 0 (default) to disable the stamp.
-  --stamp-pos X,Y     the X,Y coordinates (relative to the bottom-left corner) of the visible signature stamp.
-  --out-file FILE     the path of the signed pdf file. The default is to add the -signed suffix to the input PDF
-  --tsa URL           URL of the timestamp server. Default: http://qts.harica.gr/
+  --pin PIN           the card pin. Default: ask for pin
+  --stamp-page N      the page to add a visible signature stamp. Default: 0 (no stamp)
+  --stamp-pos X,Y     the X,Y coordinates (relative to the bottom-left corner) of the signature stamp. Default: 200,20
+  --stamp-size W,H    the width and height of the signature stamp. Default: 270,60
+  --stamp-text TEXT   the text of the signature stamp. Default: signer's name and date
+  --out-file FILE     the path of the signed pdf file. Default: input file with -signed suffix
+  --tsa URL           URL of the timestamp server (empty: no timestamp). Default: http://qts.harica.gr/
   --card-reader FILE  driver (.so/.dll file) of the card reader. Default: libgclib.so
 ```
 
