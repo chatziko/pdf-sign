@@ -8,7 +8,7 @@ universities (but any PKCS #11 compatible reader should work).
 
 ### Installation
 
-1. Install the [endesive](https://github.com/m32/endesive) library
+1. Install the [endesive](https://github.com/m32/endesive) library (python3 needed)
     ```
     sudo python3 -mpip install endesive
     ```
@@ -19,6 +19,8 @@ universities (but any PKCS #11 compatible reader should work).
    ./scripts/install-gemalto-ubuntu-20.04.sh
    ```
    Instructions for other linux distributions are available [here](https://it.auth.gr/el/node/4986).
+
+3. Put `pdf-sign.py` anywhere in your `PATH` (or run it from the local dir)
 
 
 ### Usage
@@ -63,6 +65,5 @@ https://ec.europa.eu/cefdigital/DSS/webapp-demo/validation
 ### Nautilus integration
 
 An easy way to integrate with Nautilus:
-- put `pdf-sign.py` anywhere in `PATH`
 - copy `scripts/pdf-sign.sh` under `.local/share/nautilus/scripts`
 - Right click a pdf file and select `Scripts / pdf-sign.sh`
