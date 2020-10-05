@@ -8,19 +8,24 @@ universities (but any PKCS #11 compatible reader should work).
 
 ### Installation
 
-1. Install the [endesive](https://github.com/m32/endesive) library (python3 needed)
+1. [pip](https://pip.pypa.io/en/stable/installing/) (for python3) and [swig](http://swig.org/) are needed by the endesive library, to install in Ubuntu:
+   ```
+   sudo apt install python3-pip swig
+   ```
+
+1. Install the [endesive](https://github.com/m32/endesive) library:
     ```
     sudo python3 -mpip install endesive
     ```
 
-2. Install the card reader drivers. The Gemalto drivers for __Ubuntu 20.04__ can
+1. Install the card reader drivers. The Gemalto drivers for __Ubuntu 20.04__ can
    be installed using the provided script:
    ```
    ./scripts/install-gemalto-ubuntu-20.04.sh
    ```
    Instructions for other linux distributions are available [here](https://it.auth.gr/el/node/4986).
 
-3. Put `pdf-sign.py` anywhere in your `PATH` (or run it from the local dir)
+1. Put `pdf-sign.py` anywhere in your `PATH` (or run it from the local dir)
 
 
 ### Usage
